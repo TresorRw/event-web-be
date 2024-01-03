@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { hashPassword, validationMessages } from "../utils";
 import { User } from "../models";
-import { RegsiterSchema } from "../validators";
+import { RegisterSchema } from "../validators";
 import { Issues, safeParse } from "valibot";
 
 export const RegisterUser = async (req: Request, res: Response) => {
   const body = req.body;
-  const result = safeParse(RegsiterSchema, body);
+  const result = safeParse(RegisterSchema, body);
   if (result.success) {
     res.status(200).json(result.output);
   }
