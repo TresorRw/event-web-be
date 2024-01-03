@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-export const RegsiterSchema = v.object({
+export const RegisterSchema = v.object({
   email: v.string("Your email should be string", [
     v.email("Your email should be a valid email address"),
   ]),
@@ -16,4 +16,4 @@ export const RegsiterSchema = v.object({
   ]),
 });
 
-export const LoginSchema = v.pick(RegsiterSchema, ["email", "password"]);
+export const LoginSchema = v.pick(RegisterSchema, ["email", "password"]);
