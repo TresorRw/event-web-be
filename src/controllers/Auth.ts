@@ -93,3 +93,8 @@ export const LogUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const AllUsers = async (req: Request, res: Response) => {
+  const users = await User.find().select("-password");
+  res.status(200).json({ statusCode: 200, users });
+};
