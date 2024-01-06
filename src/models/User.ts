@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+export enum UserRole {
+  ORGANIZER = "organizer",
+  ATTENDEE = "attendee",
+}
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -7,6 +12,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: Object.values(UserRole),
+      default: UserRole.ATTENDEE,
     },
     password: {
       type: String,
