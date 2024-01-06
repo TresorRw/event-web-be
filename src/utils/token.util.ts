@@ -9,6 +9,7 @@ if (!secret) {
 
 export const generateToken = (payload: {
   _id: string;
+  role: "organizer" | "attendee";
   displayName: string;
   email: string;
 }) => {
