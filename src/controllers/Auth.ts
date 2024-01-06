@@ -20,10 +20,10 @@ export const RegisterUser = async (req: Request, res: Response) => {
   }
 
   if (result.success) {
-    const { email, password, displayName } = result.output;
+    const { email, password, role, displayName } = result.output;
     const user = await User.findOne({ email });
     if (user) {
-      res.status(409).json({
+      return res.status(409).json({
         statusCode: 409,
         message: "Email is already taken",
       });
@@ -32,13 +32,13 @@ export const RegisterUser = async (req: Request, res: Response) => {
     // hash password
     const hashedPassword = await hashPassword(password);
     try {
-      await User.create({ email, password: hashedPassword, displayName });
+      await User.create({ email, role, password: hashedPassword, displayName });
       res.status(201).json({
         statusCode: 201,
         message: "You have been successfully registered",
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         statusCode: 500,
         message: `Something went wrong! ${error.message}`,
       });
@@ -73,6 +73,7 @@ export const LogUser = async (req: Request, res: Response) => {
       const token = generateToken({
         _id: user.id,
         email,
+        role: user.role,
         displayName: user.displayName,
       });
       res.status(200).json({
