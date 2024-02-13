@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "commonjs",
-    // "typeRoots": ["./node_modules/@types", "./src/types"],
     "outDir": "./dist",
     "removeComments": true,
     "esModuleInterop": true,
