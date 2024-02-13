@@ -1,10 +1,15 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { config } from "dotenv";
+import { IUser } from "../Interfaces";
 config();
 
+export interface CustomReq extends Request {
+  user?: IUser;
+}
+
 export const CheckAndVerifyAuthHeader = async (
-  req: Request,
+  req: CustomReq,
   res: Response,
   next: NextFunction,
 ) => {
@@ -24,8 +29,7 @@ export const CheckAndVerifyAuthHeader = async (
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    console.log(decoded);
-    req.user = decoded;
+    req.user = decoded as IUser;
     next();
   } catch (error) {
     return res.status(401).json({
