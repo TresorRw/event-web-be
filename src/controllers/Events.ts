@@ -32,10 +32,7 @@ export const CreateEvent = async (req: CustomReq, res: Response) => {
         data: event,
       });
     } catch (error: any) {
-      return res.status(500).json({
-        statusCode: 500,
-        message: `Something went wrong: ${error.message}`,
-      });
+      return errorHandler(res, 500, `Something went wrong: ${error.message}`);
     }
   }
 };
@@ -52,21 +49,14 @@ export const GetEvents = async (req: CustomReq, res: Response) => {
       data: events,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      statusCode: 500,
-      message: `Something went wrong while fetching events: ${error.message}`,
-    });
+    return errorHandler(res, 500, `Something went wrong, try again!`);
   }
 };
 
 export const GetEvent = async (req: CustomReq, res: Response) => {
   const eventId = req.params.eventId;
   if (!isValidObjectId(eventId)) {
-    return errorHandler(
-      res,
-      400,
-      "Invalid event ID, provide correct format of an ID",
-    );
+    return errorHandler(res, 400, "Invalid event ID, provide correct an ID");
   }
   try {
     const event = await Event.findById(eventId).populate(
@@ -82,10 +72,6 @@ export const GetEvent = async (req: CustomReq, res: Response) => {
       data: event,
     });
   } catch (error: any) {
-    return errorHandler(
-      res,
-      500,
-      `Something went wrong while fetching event: ${error.message}`,
-    );
+    return errorHandler(res, 500, `Something went wrong, try again!`);
   }
 };
