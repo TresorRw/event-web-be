@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { config } from "dotenv";
 import { IUser } from "../Interfaces";
+import { verifyToken } from "../utils";
 config();
 
 export interface CustomReq extends Request {
@@ -28,8 +28,8 @@ export const CheckAndVerifyAuthHeader = async (
     });
   }
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    req.user = decoded as IUser;
+    const decodedPayload = verifyToken(token);
+    req.user = decodedPayload;
     next();
   } catch (error) {
     return res.status(401).json({
