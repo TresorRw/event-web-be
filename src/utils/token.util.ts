@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import { sign, verify } from "jsonwebtoken";
+import { IUser } from "../Interfaces";
 config();
 
 const secret = process.env.JWT_SECRET;
@@ -20,7 +21,7 @@ export const generateToken = (payload: {
 export const verifyToken = (token: string) => {
   try {
     const payload = verify(token, secret);
-    return payload;
+    return payload as IUser;
   } catch (error) {
     throw new Error("Invalid or expired token");
   }
