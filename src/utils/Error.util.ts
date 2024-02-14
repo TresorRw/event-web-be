@@ -1,4 +1,4 @@
-import { Issues } from "valibot";
+import { SchemaIssues } from "valibot";
 import { Response } from "express";
 
 /**
@@ -8,7 +8,7 @@ import { Response } from "express";
  * @returns {string[]} An array containing the error messages
  */
 
-export function validationMessages(issues: Issues): string[] {
+export function validationMessages(issues: SchemaIssues): string[] {
   return issues.map((issue) => issue.message);
 }
 
