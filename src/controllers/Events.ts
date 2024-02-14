@@ -5,7 +5,7 @@ import { validationMessages } from "../utils";
 import { CustomReq } from "../middlewares";
 import { Event } from "../models";
 
-export async function CreateEvent(req: CustomReq, res: Response) {
+export const CreateEvent = async (req: CustomReq, res: Response) => {
   const body = req.body;
   const user = req.user;
   const result = safeParse(EventSchema, body);
@@ -37,4 +37,23 @@ export async function CreateEvent(req: CustomReq, res: Response) {
       });
     }
   }
-}
+};
+
+export const GetEvents = async (req: CustomReq, res: Response) => {
+  try {
+    const events = await Event.find().populate(
+      "organizer",
+      "-password -createdAt -updatedAt",
+    );
+    return res.status(200).json({
+      statusCode: 200,
+      message: "Events retrieved successfully",
+      data: events,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      statusCode: 500,
+      message: `Something went wrong while fetching events: ${error.message}`,
+    });
+  }
+};
