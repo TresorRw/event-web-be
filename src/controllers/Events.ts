@@ -1,9 +1,10 @@
 import { Response } from "express";
 import { EventSchema } from "../validators";
 import { safeParse } from "valibot";
-import { validationMessages } from "../utils";
+import { errorHandler, validationMessages } from "../utils";
 import { CustomReq } from "../middlewares";
 import { Event } from "../models";
+import { isValidObjectId } from "mongoose";
 
 export const CreateEvent = async (req: CustomReq, res: Response) => {
   const body = req.body;
@@ -55,5 +56,36 @@ export const GetEvents = async (req: CustomReq, res: Response) => {
       statusCode: 500,
       message: `Something went wrong while fetching events: ${error.message}`,
     });
+  }
+};
+
+export const GetEvent = async (req: CustomReq, res: Response) => {
+  const eventId = req.params.eventId;
+  if (!isValidObjectId(eventId)) {
+    return errorHandler(
+      res,
+      400,
+      "Invalid event ID, provide correct format of an ID",
+    );
+  }
+  try {
+    const event = await Event.findById(eventId).populate(
+      "organizer",
+      "-password -createdAt -updatedAt",
+    );
+    if (!event) {
+      return errorHandler(res, 404, `Event with ID: ${eventId} not found`);
+    }
+    return res.status(200).json({
+      statusCode: 200,
+      message: "Event retrieved successfully",
+      data: event,
+    });
+  } catch (error: any) {
+    return errorHandler(
+      res,
+      500,
+      `Something went wrong while fetching event: ${error.message}`,
+    );
   }
 };
