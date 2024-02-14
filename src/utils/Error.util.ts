@@ -1,4 +1,5 @@
 import { Issues } from "valibot";
+import { Response } from "express";
 
 /**
  * Returns an array of error messages from validation issues.
@@ -10,3 +11,12 @@ import { Issues } from "valibot";
 export function validationMessages(issues: Issues): string[] {
   return issues.map((issue) => issue.message);
 }
+
+// Middleware for handling errors
+export const errorHandler = (
+  res: Response,
+  statusCode: number,
+  message: string,
+) => {
+  return res.status(statusCode).json({ statusCode, message });
+};
