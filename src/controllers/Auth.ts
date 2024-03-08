@@ -16,7 +16,11 @@ export const RegisterUser = async (req: Request, res: Response) => {
   if (result.issues) {
     return res
       .status(400)
-      .json({ statusCode: 400, message: validationMessages(result.issues) });
+      .json({
+        statusCode: 400,
+        message: "Please see the errors",
+        errors: validationMessages(result.issues),
+      });
   }
 
   if (result.success) {

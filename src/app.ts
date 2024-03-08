@@ -26,8 +26,8 @@ connectDB()
   });
 
 // Routes
-app.use("/auth", AuthRoutes);
-app.use("/events", EventRouter);
+app.use("/api/auth", AuthRoutes);
+app.use("/api/events", EventRouter);
 
 app.listen(PORT, () => {
   console.log(`🚀 app is running on ${PORT}`);
