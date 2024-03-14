@@ -54,17 +54,25 @@ export const GetAllEvents = async (req: Request, res: Response) => {
 
 export const SearchEvents = async (req: Request, res: Response) => {
   const searchTerm = req.query.q as string;
-  const searchRegEx = new RegExp(searchTerm, "i");
-  const events = await Event.find({ name: { $regex: searchRegEx } }).populate(
+  const category = req.query.cat;
+  let filter: any = {};
+  if (searchTerm) {
+    const searchRegEx = new RegExp(searchTerm, "i");
+    filter.name = { $regex: searchRegEx };
+  }
+  if (category) {
+    filter.category = category;
+  }
+  const events = await Event.find(filter).populate(
     "organizer",
     "-password -createdAt -updatedAt",
   );
   if (events.length == 0) {
-    return errorHandler(res, 404, `No events with ${searchTerm} found`);
+    return errorHandler(res, 404, `No events based on applied filters found`);
   } else {
     return res.status(200).json({
       statusCode: 200,
-      message: `Events with ${searchTerm} found`,
+      message: `Events found based on applied filters`,
       data: events,
     });
   }
