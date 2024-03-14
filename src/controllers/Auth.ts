@@ -14,13 +14,11 @@ export const RegisterUser = async (req: Request, res: Response) => {
   const result = safeParse(RegisterSchema, body);
   // If validation failed, send back the error messages
   if (result.issues) {
-    return res
-      .status(400)
-      .json({
-        statusCode: 400,
-        message: "Please see the errors",
-        errors: validationMessages(result.issues),
-      });
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Please see the errors",
+      errors: validationMessages(result.issues),
+    });
   }
 
   if (result.success) {

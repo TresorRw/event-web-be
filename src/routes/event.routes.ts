@@ -4,15 +4,17 @@ import {
   CreateEvent,
   DeleteEvent,
   GetEvent,
-  GetEvents,
+  GetAllEvents,
   UpdateEvent,
+  SearchEvents,
 } from "../controllers/Events";
 import { forOrganizersOnly } from "../middlewares";
 
 export const EventRouter = Router();
 
 EventRouter.post("/", CheckAndVerifyAuthHeader, forOrganizersOnly, CreateEvent);
-EventRouter.get("/", CheckAndVerifyAuthHeader, GetEvents);
+EventRouter.get("/", GetAllEvents);
+EventRouter.get("/search?", SearchEvents);
 EventRouter.get("/:eventId", CheckAndVerifyAuthHeader, GetEvent);
 EventRouter.patch(
   "/:eventId",

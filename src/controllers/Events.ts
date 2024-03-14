@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { EventSchema } from "../validators";
 import { safeParse } from "valibot";
 import { errorHandler, validationMessages } from "../utils";
@@ -37,12 +37,11 @@ export const CreateEvent = async (req: CustomReq, res: Response) => {
   }
 };
 
-export const GetEvents = async (req: CustomReq, res: Response) => {
+export const GetAllEvents = async (req: Request, res: Response) => {
   try {
-    const events = await Event.find().populate(
-      "organizer",
-      "-password -createdAt -updatedAt",
-    );
+    const events = await Event.find()
+      .populate("organizer", "-password -createdAt -updatedAt")
+      .sort({ createdAt: -1 });
     return res.status(200).json({
       statusCode: 200,
       message: "Events retrieved successfully",
@@ -50,6 +49,24 @@ export const GetEvents = async (req: CustomReq, res: Response) => {
     });
   } catch (error: any) {
     return errorHandler(res, 500, `Something went wrong, try again!`);
+  }
+};
+
+export const SearchEvents = async (req: Request, res: Response) => {
+  const searchTerm = req.query.q as string;
+  const searchRegEx = new RegExp(searchTerm, "i");
+  const events = await Event.find({ name: { $regex: searchRegEx } }).populate(
+    "organizer",
+    "-password -createdAt -updatedAt",
+  );
+  if (events.length == 0) {
+    return errorHandler(res, 404, `No events with ${searchTerm} found`);
+  } else {
+    return res.status(200).json({
+      statusCode: 200,
+      message: `Events with ${searchTerm} found`,
+      data: events,
+    });
   }
 };
 
