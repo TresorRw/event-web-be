@@ -9,7 +9,7 @@ import {
 } from "../controllers/Events";
 import { forOrganizersOnly } from "../middlewares";
 
-const EventRouter = Router();
+export const EventRouter = Router();
 
 EventRouter.post("/", CheckAndVerifyAuthHeader, forOrganizersOnly, CreateEvent);
 EventRouter.get("/", CheckAndVerifyAuthHeader, GetEvents);
@@ -26,4 +26,3 @@ EventRouter.delete(
   forOrganizersOnly,
   DeleteEvent,
 );
-export default EventRouter;

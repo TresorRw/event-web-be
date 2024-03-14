@@ -1,8 +1,7 @@
 import express, { Application } from "express";
 import { config } from "dotenv";
 import { connectDB } from "./utils";
-import AuthRoutes from "./routes/auth.routes";
-import EventRouter from "./routes/event.routes";
+import { AuthRoutes, EventRouter } from "./routes";
 import cors from "cors";
 config();
 
