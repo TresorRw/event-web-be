@@ -18,3 +18,13 @@ export const EventSchema = v.object({
   location: v.string("Event location should be string"),
   price: v.number("Event price should be a number"),
 });
+
+export const AttendEventSchema = v.object({
+  contactName: v.string("Contact name should be string", [
+    v.minLength(2, "Your name can not be less 2 characters"),
+  ]),
+  contactNumber: v.string("Contact phone number is required", [
+    v.minLength(10, "Invalid phone number"),
+  ]),
+  eventId: v.string("Event ID is required"),
+});
