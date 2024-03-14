@@ -7,7 +7,7 @@ import {
   GetAllEvents,
   UpdateEvent,
   SearchEvents,
-} from "../controllers/Events";
+} from "../controllers";
 import { forOrganizersOnly } from "../middlewares";
 
 export const EventRouter = Router();
