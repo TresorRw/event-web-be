@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import { config } from "dotenv";
 import { connectDB } from "./utils";
-import { AuthRoutes, EventRouter } from "./routes";
+import { AttendanceRouter, AuthRoutes, EventRouter } from "./routes";
 import cors from "cors";
 config();
 
@@ -27,6 +27,7 @@ connectDB()
 // Routes
 app.use("/api/auth", AuthRoutes);
 app.use("/api/events", EventRouter);
+app.use("/api/event-attendance", AttendanceRouter);
 
 app.listen(PORT, () => {
   console.log(`🚀 app is running on ${PORT}`);
