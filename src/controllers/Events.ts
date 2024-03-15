@@ -3,7 +3,7 @@ import { EventSchema } from "../validators";
 import { safeParse } from "valibot";
 import { errorHandler, validationMessages } from "../utils";
 import { CustomReq } from "../middlewares";
-import { Event } from "../models";
+import { Event, EventAttendance } from "../models";
 import { isValidObjectId } from "mongoose";
 
 export const CreateEvent = async (req: CustomReq, res: Response) => {
@@ -63,10 +63,9 @@ export const SearchEvents = async (req: Request, res: Response) => {
   if (category) {
     filter.category = category;
   }
-  const events = await Event.find(filter).populate(
-    "organizer",
-    "-password -createdAt -updatedAt",
-  );
+  const events = await Event.find(filter)
+    .populate("organizer", "-password -role -createdAt -updatedAt")
+    .sort({ created: -1 });
   if (events.length == 0) {
     return errorHandler(res, 404, `No events based on applied filters found`);
   } else {
@@ -86,7 +85,7 @@ export const GetEvent = async (req: CustomReq, res: Response) => {
   try {
     const event = await Event.findById(eventId).populate(
       "organizer",
-      "-password -createdAt -updatedAt",
+      "-password -role -createdAt -updatedAt",
     );
     if (!event) {
       return errorHandler(res, 404, `Event with ID: ${eventId} not found`);
@@ -157,4 +156,31 @@ export const DeleteEvent = async (req: CustomReq, res: Response) => {
   } catch (error: any) {
     return errorHandler(res, 500, `Something went wrong, try again!`);
   }
+};
+
+export const EventAttendees = async (req: CustomReq, res: Response) => {
+  const user = req.user;
+  const eventId = req.params.eventId;
+  if (!isValidObjectId(eventId)) {
+    return errorHandler(res, 400, "Invalid event ID, provide correct an ID");
+  }
+  const event = await Event.find({ _id: eventId, organizer: user?._id });
+  if (!event) {
+    return errorHandler(
+      res,
+      404,
+      `Event with ID: ${eventId} is not found in your account`,
+    );
+  }
+
+  // Get tickets associated with the event
+  const tickets = await EventAttendance.find({ event: eventId })
+    .populate("user", "-password -createdAt -updatedAt -role")
+    .sort({ createdAt: -1 });
+
+  return res.status(200).json({
+    statusCode: 200,
+    message: "Event attendees retrieved successfully",
+    data: tickets,
+  });
 };

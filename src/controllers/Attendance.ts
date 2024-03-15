@@ -60,22 +60,39 @@ export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
 };
 
 export const MyEvents = async (req: CustomReq, res: Response) => {
-  res.status(200).json({
+  const user = req.user;
+  // get all events user have registered on
+  const events = await EventAttendance.find({ user: user?._id })
+    .populate({
+      path: "event",
+      select: "-__v -createdAt -updatedAt",
+      populate: {
+        path: "organizer",
+        select: "-__v -password -role -createdAt -updatedAt",
+      },
+    })
+    .sort({ createdAt: -1 });
+
+  return res.status(200).json({
     statusCode: 200,
-    message: "Events retrieved successfully",
+    message: "Events you have registred on",
+    data: events,
   });
 };
 
 export const CancelTicket = async (req: CustomReq, res: Response) => {
-  res.status(200).json({
-    statusCode: 200,
-    message: "Cancelled ticket well",
-  });
-};
-
-export const MyAttendees = async (req: CustomReq, res: Response) => {
-  res.status(200).json({
-    statusCode: 200,
-    message: "Attendees retrieved successfully",
-  });
+  const user = req.user;
+  // const events = await Event.find({ organizer: user?._id }).populate({
+  //   path: "eventattendance",
+  //   select: "-__v -createdAt -updatedAt",
+  //   populate: {
+  //     path: "user",
+  //     select: "-__v -password -role -createdAt -updatedAt",
+  //   }
+  // });
+  // return res.status(200).json({
+  //   statusCode: 200,
+  //   message: "Your events ",
+  //   data: events,
+  // });
 };
