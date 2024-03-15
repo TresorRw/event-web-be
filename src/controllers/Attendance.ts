@@ -82,17 +82,28 @@ export const MyEvents = async (req: CustomReq, res: Response) => {
 
 export const CancelTicket = async (req: CustomReq, res: Response) => {
   const user = req.user;
-  // const events = await Event.find({ organizer: user?._id }).populate({
-  //   path: "eventattendance",
-  //   select: "-__v -createdAt -updatedAt",
-  //   populate: {
-  //     path: "user",
-  //     select: "-__v -password -role -createdAt -updatedAt",
-  //   }
-  // });
-  // return res.status(200).json({
-  //   statusCode: 200,
-  //   message: "Your events ",
-  //   data: events,
-  // });
+  const ticketId = req.params.ticketId;
+
+  if (!isValidObjectId(ticketId)) {
+    return errorHandler(res, 400, "Invalid ticket ID, provide correct an ID");
+  }
+
+  // Check if ticket exists in attendees account
+  const ticket = await EventAttendance.findOne({
+    _id: ticketId,
+    user: user?._id,
+  });
+  if (!ticket) {
+    return errorHandler(res, 404, "We can not find the ticket");
+  }
+
+  try {
+    await EventAttendance.findByIdAndDelete(ticketId);
+    return res.status(200).json({
+      statusCode: 200,
+      message: "Ticket deleted successfully",
+    });
+  } catch (e: any) {
+    return errorHandler(res, 500, `Something went wrong, try again!`);
+  }
 };
