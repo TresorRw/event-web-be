@@ -2,10 +2,9 @@ import type { Response } from "express";
 import { CustomReq } from "../middlewares";
 import { AttendEventSchema } from "../validators";
 import { safeParse } from "valibot";
-import { errorHandler, validationMessages } from "../utils";
+import { errorHandler, validationMessages, verifyObjectId } from "../utils";
 import { randomUUID } from "crypto";
 import { Event, EventAttendance } from "../models";
-import { isValidObjectId } from "mongoose";
 
 export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
   const user = req.user;
@@ -21,9 +20,7 @@ export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
 
   if (result.success) {
     const { eventId } = result.output;
-    if (!isValidObjectId(eventId)) {
-      return errorHandler(res, 400, "Invalid event ID, provide correct an ID");
-    }
+    verifyObjectId(eventId, res);
 
     // Check if event exists
     const event = await Event.findById(eventId);
@@ -84,9 +81,7 @@ export const CancelTicket = async (req: CustomReq, res: Response) => {
   const user = req.user;
   const ticketId = req.params.ticketId;
 
-  if (!isValidObjectId(ticketId)) {
-    return errorHandler(res, 400, "Invalid ticket ID, provide correct an ID");
-  }
+  verifyObjectId(ticketId, res);
 
   // Check if ticket exists in attendees account
   const ticket = await EventAttendance.findOne({

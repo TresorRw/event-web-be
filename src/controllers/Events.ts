@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import { EventSchema } from "../validators";
 import { safeParse } from "valibot";
-import { errorHandler, validationMessages } from "../utils";
+import { errorHandler, validationMessages, verifyObjectId } from "../utils";
 import { CustomReq } from "../middlewares";
 import { Event, EventAttendance } from "../models";
-import { isValidObjectId } from "mongoose";
 
 export const CreateEvent = async (req: CustomReq, res: Response) => {
   const body = req.body;
@@ -79,9 +78,7 @@ export const SearchEvents = async (req: Request, res: Response) => {
 
 export const GetEvent = async (req: CustomReq, res: Response) => {
   const eventId = req.params.eventId;
-  if (!isValidObjectId(eventId)) {
-    return errorHandler(res, 400, "Invalid event ID, provide correct an ID");
-  }
+  verifyObjectId(eventId, res);
   try {
     const event = await Event.findById(eventId).populate(
       "organizer",
@@ -102,9 +99,8 @@ export const GetEvent = async (req: CustomReq, res: Response) => {
 
 export const UpdateEvent = async (req: CustomReq, res: Response) => {
   const eventId = req.params.eventId;
-  if (!isValidObjectId(eventId)) {
-    return errorHandler(res, 400, "Invalid event ID, provide correct an ID");
-  }
+  verifyObjectId(eventId, res);
+
   const body = req.body;
   const event = await Event.findOne({ _id: eventId, organizer: req.user?._id });
   if (!event) {
@@ -140,9 +136,8 @@ export const UpdateEvent = async (req: CustomReq, res: Response) => {
 
 export const DeleteEvent = async (req: CustomReq, res: Response) => {
   const eventId = req.params.eventId;
-  if (!isValidObjectId(eventId)) {
-    return errorHandler(res, 400, "Invalid event ID, provide correct an ID");
-  }
+  verifyObjectId(eventId, res);
+
   const event = await Event.findOne({ _id: eventId, organizer: req.user?._id });
   if (!event) {
     return errorHandler(res, 404, `Event with ID: ${eventId} is not found`);
@@ -161,9 +156,7 @@ export const DeleteEvent = async (req: CustomReq, res: Response) => {
 export const EventAttendees = async (req: CustomReq, res: Response) => {
   const user = req.user;
   const eventId = req.params.eventId;
-  if (!isValidObjectId(eventId)) {
-    return errorHandler(res, 400, "Invalid event ID, provide correct an ID");
-  }
+  verifyObjectId(eventId, res);
   const event = await Event.find({ _id: eventId, organizer: user?._id });
   if (!event) {
     return errorHandler(
