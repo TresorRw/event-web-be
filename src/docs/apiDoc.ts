@@ -1,30 +1,41 @@
-import { SwaggerDefinition } from "swagger-jsdoc";
+import swaggerJsDoc from "swagger-jsdoc";
 
-const options: SwaggerDefinition = {
-  openapi: "3.0.1",
-  info: {
-    title: "Event Mgmt System API",
-    version: "1.0.0",
-  },
-  servers: [
-    {
-      url: "http://localhost:3030",
-      description: "Dev server",
+const options: swaggerJsDoc.Options = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "Event Mgmt System API",
+      version: "1.0.0",
     },
-  ],
-  schemes: ["http", "https"],
-  basePath: "/api",
-  securityDefinitions: {
-    JWT: {
-      type: "apiKey",
-      name: "Authorization",
-      in: "header",
+    servers: [
+      {
+        url: "http://localhost:3030",
+        description: "Dev server",
+      },
+    ],
+    schemes: ["http", "https"],
+    components: {
+      securitySchemes: {
+        authsecurity: {
+          type: "http",
+          scheme: "bearer",
+          in: "header",
+          bearerFormat: "JWT",
+        },
+      },
     },
+    security: [
+      {
+        authsecurity: [],
+      },
+    ],
+    consumes: ["application/json"],
+    produces: ["application/json"],
+    tags: [{ name: "Auth" }, { name: "Events" }, { name: "Attendance" }],
   },
-  consumes: ["application/json"],
-  produces: ["application/json"],
-  apis: ["./routes/*.ts"],
-  tags: [{ name: "Auth" }, { name: "Events" }, { name: "Attendance" }],
+  apis: ["./src/docs/*.docs.ts"],
 };
 
-export default options;
+const swaggerSpec = swaggerJsDoc(options);
+
+export default swaggerSpec;
