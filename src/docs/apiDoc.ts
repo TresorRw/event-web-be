@@ -31,7 +31,7 @@ const options: swaggerJsDoc.Options = {
     ],
     consumes: ["application/json"],
     produces: ["application/json"],
-    tags: [{ name: "Auth" }, { name: "Events" }, { name: "Attendance" }],
+    tags: [{ name: "Auth" }, { name: "Events" }, { name: "Tickets" }],
   },
   apis: ["./src/docs/*.docs.ts"],
 };
