@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const EventAttendanceSchema = new mongoose.Schema(
+const EventTicketSchema = new mongoose.Schema(
   {
     contactName: {
       type: String,
@@ -28,7 +28,4 @@ const EventAttendanceSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export const EventAttendance = mongoose.model(
-  "EventAttendance",
-  EventAttendanceSchema,
-);
+export const EventTicket = mongoose.model("EventTicket", EventTicketSchema);
