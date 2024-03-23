@@ -4,7 +4,7 @@ import { AttendEventSchema } from "../validators";
 import { safeParse } from "valibot";
 import { errorHandler, validationMessages, verifyObjectId } from "../utils";
 import { randomUUID } from "crypto";
-import { Event, EventAttendance } from "../models";
+import { Event, EventTicket } from "../models";
 
 export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
   const user = req.user;
@@ -28,7 +28,7 @@ export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
       return errorHandler(res, 404, "We can not find the event");
     }
     // Check if a user already registered on an event
-    const registeredEvent = await EventAttendance.findOne({
+    const registeredEvent = await EventTicket.findOne({
       user: user?._id,
       event: eventId,
     });
@@ -39,14 +39,14 @@ export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
     try {
       // saving a user with the event
       const ticketToken = randomUUID();
-      const ticket = await EventAttendance.create({
+      const ticket = await EventTicket.create({
         event: eventId,
         ticketToken,
         user: user?._id,
         ...result.output,
       });
-      return res.status(200).json({
-        statusCode: 200,
+      return res.status(201).json({
+        statusCode: 201,
         message: "Ticket created successfully",
         data: ticket,
       });
@@ -59,7 +59,7 @@ export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
 export const MyEvents = async (req: CustomReq, res: Response) => {
   const user = req.user;
   // get all events user have registered on
-  const events = await EventAttendance.find({ user: user?._id })
+  const events = await EventTicket.find({ user: user?._id })
     .populate({
       path: "event",
       select: "-__v -createdAt -updatedAt",
@@ -84,7 +84,7 @@ export const CancelTicket = async (req: CustomReq, res: Response) => {
   verifyObjectId(ticketId, res);
 
   // Check if ticket exists in attendees account
-  const ticket = await EventAttendance.findOne({
+  const ticket = await EventTicket.findOne({
     _id: ticketId,
     user: user?._id,
   });
@@ -93,7 +93,7 @@ export const CancelTicket = async (req: CustomReq, res: Response) => {
   }
 
   try {
-    await EventAttendance.findByIdAndDelete(ticketId);
+    await EventTicket.findByIdAndDelete(ticketId);
     return res.status(200).json({
       statusCode: 200,
       message: "Ticket deleted successfully",
@@ -101,4 +101,29 @@ export const CancelTicket = async (req: CustomReq, res: Response) => {
   } catch (e: any) {
     return errorHandler(res, 500, `Something went wrong, try again!`);
   }
+};
+
+export const SingleTicket = async (req: CustomReq, res: Response) => {
+  const user = req.user;
+  const ticketId = req.params.ticketId;
+  verifyObjectId(ticketId, res);
+  const ticket = await EventTicket.findOne({
+    _id: ticketId,
+    user: user?._id,
+  }).populate({
+    path: "event",
+    select: "-__v -createdAt -updatedAt",
+    populate: {
+      path: "organizer",
+      select: "-__v -password -role -createdAt -updatedAt",
+    },
+  });
+  if (!ticket) {
+    return errorHandler(res, 404, "We can not find the ticket");
+  }
+  return res.status(200).json({
+    statusCode: 200,
+    message: "Ticket retrieved successfully",
+    data: ticket,
+  });
 };

@@ -3,7 +3,7 @@ import { EventSchema } from "../validators";
 import { safeParse } from "valibot";
 import { errorHandler, validationMessages, verifyObjectId } from "../utils";
 import { CustomReq } from "../middlewares";
-import { Event, EventAttendance } from "../models";
+import { Event, EventTicket } from "../models";
 
 export const CreateEvent = async (req: CustomReq, res: Response) => {
   const body = req.body;
@@ -167,7 +167,7 @@ export const EventAttendees = async (req: CustomReq, res: Response) => {
   }
 
   // Get tickets associated with the event
-  const tickets = await EventAttendance.find({ event: eventId })
+  const tickets = await EventTicket.find({ event: eventId })
     .populate("user", "-password -createdAt -updatedAt -role")
     .sort({ createdAt: -1 });
 

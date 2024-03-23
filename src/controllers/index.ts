@@ -1,3 +1,3 @@
 export * from "./Auth";
 export * from "./Events";
-export * from "./Attendance";
+export * from "./Tickets";
