@@ -81,6 +81,7 @@ export const LogUser = async (req: Request, res: Response) => {
       res.status(200).json({
         statusCode: 200,
         message: "You have been successfully logged in",
+        data: { name: user.displayName },
         token,
       });
     } else {
