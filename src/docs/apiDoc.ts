@@ -12,6 +12,10 @@ const options: swaggerJsDoc.Options = {
         url: "http://localhost:3030",
         description: "Dev server",
       },
+      {
+        url: "https://event-mgmt-n70w.onrender.com",
+        description: "Prod server",
+      },
     ],
     schemes: ["http", "https"],
     components: {
