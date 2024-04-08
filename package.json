@@ -22,9 +22,9 @@
     "argon2": "^0.40.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.1",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.2.3",
+    "mongoose": "^8.3.0",
     "valibot": "^0.30.0"
   },
   "devDependencies": {
@@ -40,6 +40,6 @@
     "swagger-ui-express": "^5.0.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.4"
   }
 }
