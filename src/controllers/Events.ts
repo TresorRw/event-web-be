@@ -62,6 +62,13 @@ export const SearchEvents = async (req: Request, res: Response) => {
   if (category) {
     filter.category = category;
   }
+  if (!searchTerm && !category) {
+    return res.status(200).json({
+      statusCode: 200,
+      message: "Please provide search term or category to search",
+      data: [],
+    });
+  }
   const events = await Event.find(filter)
     .populate("organizer", "-password -role -createdAt -updatedAt")
     .sort({ created: -1 });
