@@ -67,17 +67,4 @@
  *         description: User exists but incorrect password
  *       '500':
  *         description: Internal server error
- *
- * /api/auth/users:
- *   get:
- *     summary: View all users (This will be restricted to admin only)
- *     tags: [Auth]
- *     description: Route for users
- *     security: []
- *     responses:
- *       '200':
- *         description: Array of users
- *       '500':
- *         description: Internal server error
- *
  */
