@@ -1,3 +1,3 @@
-export * from "./Auth";
-export * from "./Events";
-export * from "./Tickets";
+export * from "./auth.controller";
+export * from "./event.controller";
+export * from "./ticket.controller";

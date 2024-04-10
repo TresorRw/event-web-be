@@ -1,3 +1,3 @@
-export * from "./User";
-export * from "./Event";
-export * from "./EventTicket";
+export * from "./User.model";
+export * from "./Event.model";
+export * from "./EventTicket.model";
