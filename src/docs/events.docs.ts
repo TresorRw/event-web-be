@@ -50,7 +50,17 @@
  *     tags: [Events]
  *     security: []
  *     description: Route for users events
- *     
+ *     parameters: 
+ *      - in: query
+ *        name: perPage
+ *        description: Number of events to be fetched
+ *        scheme:
+ *          type: number
+ *      - in: query
+ *        name: page
+ *        description: Page number
+ *        scheme:
+ *          type: number
  *     responses:
  *       '200':
  *         description: Array of events
@@ -94,6 +104,16 @@
  *         description: Event category
  *         scheme: 
  *          type: string
+ *       - in: query
+ *         name: perPage
+ *         description: Number of events to be fetched
+ *         scheme: 
+ *          type: number
+ *       - in: query
+ *         name: page
+ *         description: Page number
+ *         scheme: 
+ *          type: number
  *     responses:
  *       '200':
  *         description: Event fetched successfully
