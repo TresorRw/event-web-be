@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { EventSchema } from "../validators";
 import { safeParse } from "valibot";
-import { errorHandler, validationMessages, verifyObjectId } from "../utils";
+import {
+  errorHandler,
+  paginationOptions,
+  validationMessages,
+  verifyObjectId,
+} from "../utils";
 import { CustomReq } from "../middlewares";
 import { Event, EventTicket } from "../models";
 
@@ -37,13 +42,24 @@ export const CreateEvent = async (req: CustomReq, res: Response) => {
 };
 
 export const GetAllEvents = async (req: Request, res: Response) => {
+  const { page, perPage, totalResults } = await paginationOptions(
+    req,
+    {},
+    Event,
+  );
+
   try {
     const events = await Event.find()
+      .limit(perPage)
+      .skip((page - 1) * perPage)
       .populate("organizer", "-password -createdAt -updatedAt")
       .sort({ createdAt: -1 });
     return res.status(200).json({
       statusCode: 200,
       message: "Events retrieved successfully",
+      perPage,
+      page,
+      totalResults,
       data: events,
     });
   } catch (error: any) {
@@ -69,15 +85,26 @@ export const SearchEvents = async (req: Request, res: Response) => {
       data: [],
     });
   }
+  const { page, perPage, totalResults } = await paginationOptions(
+    req,
+    filter,
+    Event,
+  );
   const events = await Event.find(filter)
     .populate("organizer", "-password -role -createdAt -updatedAt")
+    .limit(perPage)
+    .skip((page - 1) * perPage)
     .sort({ created: -1 });
+
   if (events.length == 0) {
     return errorHandler(res, 404, `No events based on applied filters found`);
   } else {
     return res.status(200).json({
       statusCode: 200,
       message: `Events found based on applied filters`,
+      perPage,
+      page,
+      totalResults,
       data: events,
     });
   }
