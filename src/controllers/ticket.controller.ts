@@ -59,16 +59,9 @@ export const RegisterOnEvent = async (req: CustomReq, res: Response) => {
 export const MyEvents = async (req: CustomReq, res: Response) => {
   const user = req.user;
   // get all events user have registered on
-  const events = await EventTicket.find({ user: user?._id })
-    .populate({
-      path: "event",
-      select: "-__v -createdAt -updatedAt",
-      populate: {
-        path: "organizer",
-        select: "-__v -password -role -createdAt -updatedAt",
-      },
-    })
-    .sort({ createdAt: -1 });
+  const events = await EventTicket.find({ user: user?._id }).sort({
+    createdAt: -1,
+  });
 
   return res.status(200).json({
     statusCode: 200,
