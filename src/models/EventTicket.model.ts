@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+enum PaymentStatus {
+  PENDING = "pending",
+  PAID = "paid",
+  CANCELLED = "cancelled",
+}
+
 const EventTicketSchema = new mongoose.Schema(
   {
     contactName: {
@@ -14,6 +20,11 @@ const EventTicketSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
       required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: Object.values(PaymentStatus),
+      default: "pending",
     },
     ticketToken: {
       type: String,
